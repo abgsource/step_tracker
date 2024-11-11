@@ -19,7 +19,7 @@ class StepTracker extends StatelessWidget {
       this.dotSize = 9,
       this.circleSize = 24,
       this.pipeSize = 30.0,
-      required this.onCircleTap,
+      this.onCircleTap,
       this.selectedColor = Colors.green,
       this.unSelectedColor = Colors.red,
       this.stepTrackerType = StepTrackerType.dotVertical})
@@ -33,7 +33,7 @@ class StepTracker extends StatelessWidget {
   final Color selectedColor;
   final Color unSelectedColor;
   final StepTrackerType stepTrackerType;
-  final Function(Steps, int) onCircleTap;
+  final Function(Steps, int)? onCircleTap;
 
   Widget _buildIndexedHorizontalHeader(int index) {
     return Column(
@@ -99,19 +99,31 @@ class StepTracker extends StatelessWidget {
   }
 
   Widget _buildCircle(int index) =>
-    GestureDetector(
-      onTap: () => this.onCircleTap(this.steps[index], index),
-      child: ClipOval(
-        child: Container(
+    this.onCircleTap != null ?
+        GestureDetector(
+          onTap: () => this.onCircleTap!(this.steps[index], index),
+          child: ClipOval(
+            child: Container(
+              height: circleSize,
+              width: circleSize,
+              decoration: BoxDecoration(color: _circleColor(index)),
+              child: Center(
+                child: _buildCircleChild(index),
+              ),
+            ),
+          )
+        )
+      :
+        ClipOval(
+          child: Container(
           height: circleSize,
           width: circleSize,
           decoration: BoxDecoration(color: _circleColor(index)),
           child: Center(
             child: _buildCircleChild(index),
           ),
-        ),
-      )
-    );
+          ),
+        );
 
   Widget _buildIndexedVerticalHeader(int index) => Row(
         children: [
